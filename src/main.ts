@@ -10,6 +10,6 @@ async function bootstrap() {
     console.log(
         `Launching NestJS app on port ${port}, URL: http://0.0.0.0:${port}`,
     );
-    await app.listen(3000);
+    await app.listen(port);
 }
 bootstrap();
