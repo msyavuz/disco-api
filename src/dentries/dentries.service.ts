@@ -13,14 +13,72 @@ export class DentriesService {
     async findRandom(): Promise<Dentry | null> {
         const dentry = await this.dentriesRepository
             .createQueryBuilder("dentries")
-            .where("LENGTH(dialoguetext) > 3")
+            .where("LENGTH(dialoguetext) > :length", { length: 3 })
             .orderBy("RANDOM()")
             .limit(1)
             .getOne();
         return dentry;
     }
 
-    findOne(id: number): Promise<Dentry | null> {
+    findAll(): Promise<Dentry[]> {
+        return this.dentriesRepository.find();
+    }
+
+    findOneById(id: number): Promise<Dentry | null> {
         return this.dentriesRepository.findOneBy({ id });
+    }
+
+    findOneByText(text: string): Promise<Dentry[]> {
+        return this.dentriesRepository
+            .createQueryBuilder("dentries")
+            .where("dialoguetext LIKE :text", { text: `%${text}%` })
+            .getMany();
+    }
+    findOneByTitle(title: string): Promise<Dentry[]> {
+        return this.dentriesRepository
+            .createQueryBuilder("dentries")
+            .where("title LIKE :title", { title: `%${title}%` })
+            .getMany();
+    }
+
+    findOneByParams(queryParams: {
+        title?: string;
+        text?: string;
+        actor?: number;
+        conversant?: number;
+        conversationid?: number;
+    }): Promise<Dentry[]> {
+        let queryBuilder =
+            this.dentriesRepository.createQueryBuilder("dentries");
+
+        if (queryParams.title) {
+            queryBuilder = queryBuilder.where("title LIKE :title", {
+                title: `%${queryParams.title}%`,
+            });
+        }
+        if (queryParams.text) {
+            queryBuilder = queryBuilder.andWhere("dialoguetext LIKE :text", {
+                text: `%${queryParams.text}%`,
+            });
+        }
+        if (queryParams.actor) {
+            queryBuilder = queryBuilder.andWhere("actor = :actor", {
+                actor: queryParams.actor,
+            });
+        }
+        if (queryParams.conversant) {
+            queryBuilder = queryBuilder.andWhere("conversant = :conversant", {
+                conversant: queryParams.conversant,
+            });
+        }
+        if (queryParams.conversationid) {
+            queryBuilder = queryBuilder.andWhere(
+                "conversationid = :conversationid",
+                {
+                    conversationid: queryParams.conversationid,
+                },
+            );
+        }
+        return queryBuilder.getMany();
     }
 }

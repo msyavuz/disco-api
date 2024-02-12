@@ -1,17 +1,31 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { DentriesService } from "./dentries.service";
 
 @Controller("dentries")
 export class DentriesController {
     constructor(private readonly dentriesService: DentriesService) {}
 
-    @Get()
+    @Get("/random")
     findRandom() {
         return this.dentriesService.findRandom();
     }
 
     @Get(":id")
-    findOne(@Param("id") id: string) {
-        return this.dentriesService.findOne(+id);
+    findOneById(@Param("id") id: string) {
+        return this.dentriesService.findOneById(+id);
+    }
+
+    @Get()
+    findOneByParams(
+        @Query()
+        queryParams: {
+            title?: string;
+            text?: string;
+            actor?: number;
+            conversant?: number;
+            conversationid?: number;
+        },
+    ) {
+        return this.dentriesService.findOneByParams(queryParams);
     }
 }
