@@ -26,6 +26,6 @@ export class DentriesController {
             conversationid?: number;
         },
     ) {
-        return this.dentriesService.findOneByParams(queryParams);
+        return this.dentriesService.searchOne(queryParams);
     }
 }

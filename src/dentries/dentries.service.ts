@@ -28,20 +28,7 @@ export class DentriesService {
         return this.dentriesRepository.findOneBy({ id });
     }
 
-    findOneByText(text: string): Promise<Dentry[]> {
-        return this.dentriesRepository
-            .createQueryBuilder("dentries")
-            .where("dialoguetext LIKE :text", { text: `%${text}%` })
-            .getMany();
-    }
-    findOneByTitle(title: string): Promise<Dentry[]> {
-        return this.dentriesRepository
-            .createQueryBuilder("dentries")
-            .where("title LIKE :title", { title: `%${title}%` })
-            .getMany();
-    }
-
-    findOneByParams(queryParams: {
+    searchOne(queryParams: {
         title?: string;
         text?: string;
         actor?: number;
