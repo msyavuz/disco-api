@@ -10,6 +10,15 @@ export class ActorsService {
         private actorsRepository: Repository<Actor>,
     ) {}
 
+    async findRandom(): Promise<Actor | null> {
+        const dentry = await this.actorsRepository
+            .createQueryBuilder("actors")
+            .orderBy("RANDOM()")
+            .limit(1)
+            .getOne();
+        return dentry;
+    }
+
     findOne(id: number): Promise<Actor | null> {
         return this.actorsRepository.findOneBy({ id });
     }
@@ -17,17 +26,21 @@ export class ActorsService {
     searchOne(queryParams: {
         name?: string;
         description?: string;
-    }): Promise<Actor[]> {
+    }): Promise<Actor[] | Actor> {
+        if (!queryParams.name && !queryParams.description) {
+            return this.findRandom();
+        }
+
         let queryBuilder = this.actorsRepository.createQueryBuilder("actors");
 
         if (queryParams.name) {
-            queryBuilder = queryBuilder.where("name LIKE :name", {
+            queryBuilder = queryBuilder.where("name ILIKE :name", {
                 name: `%${queryParams.name}%`,
             });
         }
         if (queryParams.description) {
             queryBuilder = queryBuilder.andWhere(
-                "description LIKE :description",
+                "description ILIKE :description",
                 {
                     description: `%${queryParams.description}%`,
                 },

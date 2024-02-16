@@ -12,6 +12,8 @@ import { ConfigModule } from "@nestjs/config";
     imports: [
         ConfigModule.forRoot(),
 
+        // TODO: Change usage of local or remote db with env
+
         // NOTE: For use with local db
         // TypeOrmModule.forRoot({
         //     type: "better-sqlite3",
@@ -21,10 +23,8 @@ import { ConfigModule } from "@nestjs/config";
         // }),
 
         TypeOrmModule.forRoot({
-            type: "sqlite",
-            database: `libsql://still-green-goblin-msyavuz.turso.io?authToken=${process.env.TOKEN}`,
-            driver: require("@libsql/sqlite3"),
-            flags: 0x00000040,
+            type: "postgres",
+            url: process.env.DB_URL,
             entities: [Actor, Dentry],
             synchronize: false,
         }),

@@ -5,11 +5,6 @@ import { DentriesService } from "./dentries.service";
 export class DentriesController {
     constructor(private readonly dentriesService: DentriesService) {}
 
-    @Get("/random")
-    findRandom() {
-        return this.dentriesService.findRandom();
-    }
-
     @Get(":id")
     findOneById(@Param("id") id: string) {
         return this.dentriesService.findOneById(+id);

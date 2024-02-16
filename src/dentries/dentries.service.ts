@@ -20,10 +20,6 @@ export class DentriesService {
         return dentry;
     }
 
-    findAll(): Promise<Dentry[]> {
-        return this.dentriesRepository.find();
-    }
-
     findOneById(id: number): Promise<Dentry | null> {
         return this.dentriesRepository.findOneBy({ id });
     }
@@ -34,17 +30,27 @@ export class DentriesService {
         actor?: number;
         conversant?: number;
         conversationid?: number;
-    }): Promise<Dentry[]> {
+    }): Promise<Dentry[] | Dentry> {
+        if (
+            !queryParams.text &&
+            !queryParams.title &&
+            !queryParams.actor &&
+            !queryParams.conversant &&
+            !queryParams.conversationid
+        ) {
+            return this.findRandom();
+        }
+
         let queryBuilder =
             this.dentriesRepository.createQueryBuilder("dentries");
 
         if (queryParams.title) {
-            queryBuilder = queryBuilder.where("title LIKE :title", {
+            queryBuilder = queryBuilder.where("title ILIKE :title", {
                 title: `%${queryParams.title}%`,
             });
         }
         if (queryParams.text) {
-            queryBuilder = queryBuilder.andWhere("dialoguetext LIKE :text", {
+            queryBuilder = queryBuilder.andWhere("dialoguetext ILIKE :text", {
                 text: `%${queryParams.text}%`,
             });
         }
