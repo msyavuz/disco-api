@@ -2,6 +2,9 @@
 
 Public API for actors and dialogue entries of the game Disco Elysium.
 
+> [!NOTE] 
+> You can also clone and run the repo yourself. `disco.db` file is included, you just have to point the app to it as the datasource. Currently i run this on free instances of both Koyeb and Supabase so downtime is inevitable.
+
 ## Endpoints
 
 Base url: `https://disco-msyavuz.koyeb.app/api/v1`
